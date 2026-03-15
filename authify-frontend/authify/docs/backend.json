@@ -1,0 +1,155 @@
+
+{
+  "entities": {
+    "Organization": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Organization",
+      "type": "object",
+      "description": "Represents an organization registered with Authify.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Organization entity."
+        },
+        "organizationName": {
+          "type": "string",
+          "description": "The official name of the organization."
+        },
+        "ownerName": {
+          "type": "string",
+          "description": "The name of the organization owner."
+        },
+        "ownerEmail": {
+          "type": "string",
+          "description": "The email of the organization owner."
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "The UID of the owner."
+        },
+        "companySize": {
+          "type": "string",
+          "description": "The approximate size of the company."
+        },
+        "plan": {
+          "type": "string",
+          "description": "The subscription plan."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the organization was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the organization was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "organizationName",
+        "ownerId",
+        "createdAt"
+      ]
+    },
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user account within an Authify organization.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "organizationId": {
+          "type": "string",
+          "description": "Reference to the Organization this user belongs to."
+        },
+        "organizationOwnerId": {
+          "type": "string",
+          "description": "Denormalized owner ID of the parent organization."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's work email address.",
+          "format": "email"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "The user's full name."
+        },
+        "role": {
+          "type": "string",
+          "description": "User role within the organization."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "organizationId",
+        "email",
+        "fullName",
+        "createdAt"
+      ]
+    },
+    "DeviceCredential": {
+      "title": "DeviceCredential",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "organizationId": { "type": "string" },
+        "organizationOwnerId": { "type": "string" },
+        "deviceName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "organizationId", "deviceName", "createdAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "organizationId": { "type": "string" },
+        "organizationOwnerId": { "type": "string" },
+        "eventType": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "organizationId", "eventType", "timestamp"]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password"
+    ]
+  },
+  "firestore": {
+    "/organizations/{organizationId}": {
+      "schema": { "$ref": "#/backend/entities/Organization" },
+      "description": "Root collection for organizations."
+    },
+    "/organizations/{organizationId}/users/{userId}": {
+      "schema": { "$ref": "#/backend/entities/User" },
+      "description": "Users belonging to an organization."
+    },
+    "/organizations/{organizationId}/users/{userId}/deviceCredentials/{credentialId}": {
+      "schema": { "$ref": "#/backend/entities/DeviceCredential" },
+      "description": "Device-bound credentials."
+    },
+    "/organizations/{organizationId}/auditLogs/{logId}": {
+      "schema": { "$ref": "#/backend/entities/AuditLog" },
+      "description": "Organization audit logs."
+    }
+  }
+}
